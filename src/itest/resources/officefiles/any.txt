@@ -1,0 +1,1 @@
+Any text with german 'umlauten': äüß@ÄÖÜ in a .txt file
