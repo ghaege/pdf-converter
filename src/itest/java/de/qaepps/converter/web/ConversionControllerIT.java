@@ -40,7 +40,7 @@ class ConversionControllerIT {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "any.docx", "any.dotx", "any.json", "any.txt", "any.xlsx", "any.xltx", "any.xml"})
+    @ValueSource(strings = { "any.docx", "any.dotx", "any.xlsx", "any.xltx"})
     @DisplayName("should convert office docs to pdf")
     void convertOfficeDocsToPdf(String fileName) throws Exception {
 		// prepare
@@ -51,6 +51,35 @@ class ConversionControllerIT {
 		mockMvc.perform(multipart(REQUEST_URL).file(testFile))
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(targetMimeType))
+		;
+	}
+    
+    @ParameterizedTest
+    @ValueSource(strings = { "any.json", "any.txt", "any.xml", "any.xyz"})
+    @DisplayName("should convert textfiles to pdf")
+    void convertTextDocsToPdf(String fileName) throws Exception {
+		// prepare
+    	Resource testDocx = new ClassPathResource("/textfiles/" + fileName);
+		var testFile = new MockMultipartFile("file", testDocx.getFilename(), null, testDocx.getInputStream());
+
+		// test & validate
+		mockMvc.perform(multipart(REQUEST_URL).file(testFile))
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(targetMimeType))
+		;
+	}
+    
+    @ParameterizedTest
+    @ValueSource(strings = { "any.jar"})
+    @DisplayName("should not convert unknown formats to pdf")
+    void convertUnknownFormatsToPdf(String fileName) throws Exception {
+		// prepare
+    	Resource testDocx = new ClassPathResource("/unknown/" + fileName);
+		var testFile = new MockMultipartFile("file", testDocx.getFilename(), null, testDocx.getInputStream());
+
+		// test & validate
+		mockMvc.perform(multipart(REQUEST_URL).file(testFile))
+		.andExpect(status().is5xxServerError())
 		;
 	}
 }

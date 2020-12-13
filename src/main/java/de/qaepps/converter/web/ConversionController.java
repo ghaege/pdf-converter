@@ -49,7 +49,7 @@ public class ConversionController {
     		})
     @PostMapping(path = "toPdf", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<Object> convertToPdf(
-    		@ApiParam(value = "The document to convert a pdf.", required = true)
+    		@ApiParam(value = "The document to convert to pdf.", required = true)
     		@RequestParam("file") MultipartFile multipartFile) {
 		
     	LOG.info("convert to pdf: {}", multipartFile.getOriginalFilename());
