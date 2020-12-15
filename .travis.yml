@@ -3,6 +3,9 @@ sudo: required
 
 dist: trusty
 
+services:
+  - docker
+
 matrix:
   include:
     - os: linux

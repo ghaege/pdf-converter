@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   app:
+    container_name: pdf-converter-dev
     build: .
     ports:
       - "8100:8100"
