@@ -5,8 +5,12 @@ plugins {
 	id 'maven-publish'
 	id 'org.springframework.boot' version '2.2.11.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-	id 'com.softeq.gradle.itest' version '1.0.4'
 }
+
+// artifact
+group = 'de.qaepps'
+description = 'PdfConverter - Rest Api'
+version = '1.0-SNAPSHOT'
 
 java {
 	sourceCompatibility = JavaVersion.VERSION_11
@@ -46,27 +50,28 @@ dependencies {
 	implementation "commons-io:commons-io:$commonsIoVersion"
 	implementation "org.glassfish.jaxb:jaxb-runtime:$jaxbVersion"
 
-	// eclipse plugin seems to need the 'testImplementation' TODO remove this redundant code
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
 	testImplementation('org.junit.platform:junit-platform-launcher')
 
 	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-	// eclipse plugin ..
+}
 
-	itestImplementation('org.springframework.boot:spring-boot-starter-test') {
-		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+test {
+	useJUnitPlatform {
+		includeTags 'mockTest'
 	}
-	itestImplementation('org.junit.platform:junit-platform-launcher')
-
-	itestRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
 
-// @see https://github.com/Softeq/itest-gradle-plugin
-integrationTest {
-	useJUnitPlatform()
+// integrationTest's
+task integrationTest(type: Test) {
+	useJUnitPlatform {
+		includeTags 'integrationTest'
+	}
 }
+
+// TODO e2eTest's with docker
 
 // publish to mavenLocal
 publishing {
@@ -84,7 +89,3 @@ configurations {
 		it.outgoing.artifact(bootJar)
 	}
 }
-
-group = 'de.qaepps'
-description = 'PdfConverter - Rest Api'
-version = '1.0-SNAPSHOT'

@@ -1,0 +1,1 @@
+Any text äÜßÖ in a .xyz file
