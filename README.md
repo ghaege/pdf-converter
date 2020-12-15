@@ -1,6 +1,6 @@
 # pdf-converter
 
-![Build Status](https://travis-ci.org/ghaege/pdf-converter)
+[![Build Status](https://travis-ci.com/ghaege/pdf-converter.svg?branch=main)](https://travis-ci.com/ghaege/pdf-converter)
 
 ## Description
 
