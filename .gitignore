@@ -2,7 +2,8 @@
 .gradle
 /build/
 
-# eclipse #
+# idea/eclipse #
+.idea
 .classpath
 .project
 .settings

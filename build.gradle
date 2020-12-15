@@ -5,6 +5,7 @@ plugins {
 	id 'maven-publish'
 	id 'org.springframework.boot' version '2.2.11.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+	id 'com.avast.gradle.docker-compose' version '0.13.4'
 }
 
 // artifact
@@ -71,7 +72,16 @@ task integrationTest(type: Test) {
 	}
 }
 
-// TODO e2eTest's with docker
+// e2eTest's with docker-compose
+task e2eTest(type: Test) {
+	useJUnitPlatform {
+		includeTags 'e2eTest'
+	}
+}
+dockerCompose {
+	useComposeFiles = ['docker-compose-for-e2e-tests.yml']
+	isRequiredBy(project.tasks.e2eTest)	
+}
 
 // publish to mavenLocal
 publishing {

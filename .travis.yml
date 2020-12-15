@@ -13,7 +13,7 @@ matrix:
       script:
         - ./gradlew clean build
         - ./gradlew integrationTest
-#        - ./gradlew e2eTest
+        - ./gradlew e2eTest
       after_success:
         - ./gradlew coveralls
 

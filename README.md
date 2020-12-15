@@ -25,6 +25,9 @@
     # local java build with intergrationTest's (LibreOffice needs to be installed)
     ./gradlew clean build intergrationTest
 
+    # local java build with e2eTest's (end-to-end tests with docker container)
+    ./gradlew clean build e2eTest
+
     # run (LibreOffice needs to be installed)
     ./gradlew bootRun
     # or
@@ -53,7 +56,7 @@ If you only want to use it, without the need to build your own, you can pull the
 
 ### Build info
 
-- Debian SID (because it comes with LibreOffice 7+ which performs about 15% better than 6+)
+- Debian SID (because it comes with LibreOffice 7+ which performs better than 6+)
 - LibreOffice 7+
 - OpenJDK 11 Java
 - PDF Converter as REST API
