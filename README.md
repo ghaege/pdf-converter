@@ -52,8 +52,8 @@ If you only want to use it, without the need to build your own, you can pull the
 
 ### Build info
 
-- Debian SID
-- LibreOffice is 7.0.4+
+- Debian SID (because it comes with LibreOffice 7+ which performs about 15% better than 6+)
+- LibreOffice 7+
 - OpenJDK 11 Java
 - PDF Converter as REST API
 
