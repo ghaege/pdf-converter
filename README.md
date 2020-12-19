@@ -6,7 +6,7 @@
 
 * With **pdf-converter** you can convert office documents and any text documents to PDF documents through a REST API.
 * It's usage is most rewarding for automated document conversion within a docker infrastructure.
-* The project is based on Spring Boot, JODConverter and LibreOffice, which means it can convert any document type LibreOffice can.
+* The project is based on Docker, Spring Boot, JODConverter and LibreOffice, which means it can convert any document type LibreOffice can.
 * File extensions don't matter, as long as LibreOffice is able to open and convert them.
 
 ## The Application
@@ -19,16 +19,18 @@
 
 ### Build/Run the Application
 
-    # local java build 
+    # builds 
+    # local java build
     ./gradlew clean build
     
-    # local java build with intergrationTest's (LibreOffice needs to be installed)
-    ./gradlew clean build intergrationTest
-
     # local java build with e2eTest's (end-to-end tests with docker container)
     ./gradlew clean build e2eTest
 
-    # run (LibreOffice needs to be installed)
+    # builds/runs with a local installation of LibreOffice required
+    # local java build with intergrationTest's
+    ./gradlew clean build intergrationTest
+
+    # run
     ./gradlew bootRun
     # or
     java -jar build/libs/pdf-converter-$version.jar
@@ -65,7 +67,7 @@ If you only want to use it, without the need to build your own, you can pull the
 
 The default Configuration comes with 1 LibreOffice instance see [application.yml](src/main/resources/application.yml), which is fine for most usages.
 
-But if you feel the need to change it, you can configure spring boot app by mounting `/etc/app/application.properties` and put whatever you like into them.
+But if you feel the need to change it, you can configure spring boot app by mounting `/etc/app/application.properties` with the desired properties.
 
 For example if you like to have 2 LibreOffice instances, you would put into the file
 
@@ -75,10 +77,8 @@ jodconverter.local.port-numbers: 2002, 2003
 # change the tmp folder
 jodconverter.local.working-dir: /tmp
 # change upload sizes
-spring.servlet.multipart.max-file-size: 5MB
-spring.servlet.multipart.max-request-size: 5MB
-# change the server port (where the REST app is listenting
-server.port=8090
+spring.servlet.multipart.max-file-size: 3MB
+spring.servlet.multipart.max-request-size: 3MB
 ```
 
 ## REST endpoints

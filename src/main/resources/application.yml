@@ -26,4 +26,4 @@ jodconverter:
 
 logging:
   level:
-    org.jodconverter: debug
+    org.jodconverter: info

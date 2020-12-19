@@ -1,6 +1,6 @@
 #  ---------------------------------- debian ------
 # FROM debian:stable as pdf-converter
-# debian:sid with libre office 7.0.x is faster than debian:stable with libre office 6.1.x
+# debian:sid with libre office 7.0.x is faster than debian:stable with libre office 6.1.x (by 2020-12)
 FROM debian:sid as pdf-converter
 
 #  ---------------------------------- libreoffice ------
