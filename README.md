@@ -27,8 +27,8 @@
     ./gradlew clean build e2eTest
 
     # builds/runs with a local installation of LibreOffice required
-    # local java build with intergrationTest's
-    ./gradlew clean build intergrationTest
+    # local java build with integrationTest's
+    ./gradlew clean build integrationTest
 
     # run
     ./gradlew bootRun
@@ -51,7 +51,7 @@ If you only want to use it, without the need to build your own, you can pull the
     # run
     docker run --name pdf-converter -m 512m --rm -p 8100:8100 ghaege/pdf-converter
     # run as daemon
-    docker run --name pdf-converter -m 512m --rm -p 8100:8100 ghaege/pdf-converter -d
+    docker run --name pdf-converter -m 512m --rm -d -p 8100:8100 ghaege/pdf-converter
 
     # stop
     docker stop pdf-converter
