@@ -12,6 +12,8 @@ RUN apt-get update && apt-get -y install \
         procps \
     # sid variant
     && apt-get -y install libreoffice --no-install-recommends \
+    # fonts
+    && apt-get -y install fonts-liberation \
     && rm -rf /var/lib/apt/lists/*
 
 

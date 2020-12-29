@@ -56,6 +56,11 @@ If you only want to use it, without the need to build your own, you can pull the
     # stop
     docker stop pdf-converter
 
+## Release Docker Image
+
+	docker build --target pdf-converter . -t ghaege/pdf-converter:1.0.1
+	docker push ghaege/pdf-converter:1.0.1
+
 ### Build info
 
 - Debian SID (because it comes with LibreOffice 7+ which performs better than 6+)
