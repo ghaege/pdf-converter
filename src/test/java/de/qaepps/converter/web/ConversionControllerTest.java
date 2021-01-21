@@ -46,10 +46,10 @@ class ConversionControllerTest {
 	void convertToPdfShouldBeSucessful() throws IOException, OfficeException {
 		// prepare
 		when(converterService.convert(any(), any(), any())).thenReturn(new ByteArrayOutputStream());    
-		var testFile = new MockMultipartFile("file", "any-name.xyz", null, new ByteArrayInputStream("any".getBytes()));
+		var multiPartFile = new MockMultipartFile("file", "any-name.xyz", null, new ByteArrayInputStream("any".getBytes()));
 
 		// test
-		ResponseEntity<Object> response = conversionController.convertToPdf(testFile);
+		ResponseEntity<Object> response = conversionController.convertToPdf(multiPartFile);
 
 		// validate
 		verify(converterService).convert(any(), any(), any());
@@ -67,10 +67,10 @@ class ConversionControllerTest {
 	void convertToPdfShouldFail() throws IOException, OfficeException {
 		// prepare
 		when(converterService.convert(any(), any(), any())).thenThrow(new OfficeException("any"));    
-		var testFile = new MockMultipartFile("file", "any-name.xyz", null, new ByteArrayInputStream("any".getBytes()));
+		var multiPartFile = new MockMultipartFile("file", "any-name.xyz", null, new ByteArrayInputStream("any".getBytes()));
 
 		// test
-		ResponseEntity<Object> response = conversionController.convertToPdf(testFile);
+		ResponseEntity<Object> response = conversionController.convertToPdf(multiPartFile);
 
 		// validate
 		verify(converterService).convert(any(), any(), any());

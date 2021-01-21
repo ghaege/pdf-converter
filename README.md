@@ -8,6 +8,7 @@
 * It's usage is most rewarding for automated document conversion within a docker infrastructure.
 * The project is based on Docker, Spring Boot, JODConverter and LibreOffice, which means it can convert any document type LibreOffice can.
 * File extensions don't matter, as long as LibreOffice is able to open and convert them.
+* Encoding of Textfiles (.txt, .json) is UTF-8, unknown extensions (Ex: .xyz) is ISO-8859 (LibreOffice default)
 
 ## The Application
 
@@ -58,8 +59,9 @@ If you only want to use it, without the need to build your own, you can pull the
 
 ## Release Docker Image
 
-	docker build --target pdf-converter . -t ghaege/pdf-converter:1.0.1
-	docker push ghaege/pdf-converter:1.0.1
+	docker build --target pdf-converter . -t ghaege/pdf-converter:1.0.2
+	docker push ghaege/pdf-converter:1.0.2
+	docker push ghaege/pdf-converter
 
 ### Build info
 
