@@ -5,16 +5,32 @@ plugins {
 	id 'maven-publish'
 	id 'org.springframework.boot' version '2.2.11.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+  id 'war' // for more deployment options
 }
 
 // artifact
 group = 'de.qaepps'
 description = 'PdfConverter - Rest Api'
-version = '1.0.2'
+version = '1.0.3'
 
 java {
 	sourceCompatibility = JavaVersion.VERSION_11
 	targetCompatibility = JavaVersion.VERSION_11
+}
+tasks.withType(JavaCompile) {
+  options.encoding = 'UTF-8'
+}
+
+bootWar {
+  manifest {
+    attributes(
+      'Start-Class'           : 'de.qaepps.converter.PdfConverterApplication',
+      'Built-By'              : System.properties['user.name'],
+      'Build-Timestamp'       : new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
+      'Implementation-Title'  : 'PdfConverter',
+      'Implementation-Version': archiveVersion,
+    )
+  }
 }
 
 repositories {
@@ -81,6 +97,13 @@ task e2eTest(type: Test) {
 		includeTags 'e2eTest'
 	}
 }
+
+// explode war for distribution
+task explodedWar(type: Copy) {
+    from zipTree(war.archiveFile)
+    into "${buildDir}/exploded"
+} 
+assemble.dependsOn explodedWar
 
 // publish to mavenLocal
 publishing {
