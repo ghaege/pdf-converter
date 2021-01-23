@@ -117,7 +117,7 @@ publishing {
 // ./gradlew clean build publishToMavenLocal -xintegrationTest
 configurations {
 	[apiElements, runtimeElements].each {
-		it.outgoing.artifacts.removeIf { it.buildDependencies.getDependencies(null).contains(jar) }
-		it.outgoing.artifact(bootJar)
+		it.outgoing.artifacts.removeIf { it.buildDependencies.getDependencies(null).contains(war) }
+		it.outgoing.artifact(bootWar)
 	}
 }
