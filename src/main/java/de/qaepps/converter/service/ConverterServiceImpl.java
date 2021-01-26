@@ -60,8 +60,8 @@ public class ConverterServiceImpl implements ConverterService {
 			return null;
 		}
 		
-		// simple solution: for now set encoding to UTF-8 for extensions txt, json 
-		if (FilenameUtils.isExtension(inputFileName.toLowerCase(), "txt", "json")) {
+		// simple solution: for now set encoding to UTF-8 for extensions txt, json, xml
+		if (FilenameUtils.isExtension(inputFileName.toLowerCase(), "txt", "json", "xml")) {
 			return getDocumentFormat("utf8");
 		}
 		

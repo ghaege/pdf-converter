@@ -5,8 +5,10 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -48,6 +50,7 @@ class PdfConverterE2eIT {
 
 	private static final String API = "/convert/toPdf";
 	private static final int EXPOSED_PORT = 8100;
+    private static final String TARGET_DIR = "build/converted/byDockerImage";
 
 	private static String getUrl() {
 		return "http://" + appContainer.getHost() + ":" + appContainer.getMappedPort(EXPOSED_PORT) + API;
@@ -64,9 +67,9 @@ class PdfConverterE2eIT {
 	@ParameterizedTest
 	@ValueSource(strings = { "any.docx", "any.dotx", "any.xlsx", "any.xltx"})
 	@DisplayName("should convert office docs to pdf")
-	void convertOfficeDocsToPdf(String filename) {
+	void convertOfficeDocsToPdf(String filename) throws Exception {
 		// prepare	  
-		HttpEntity<MultiValueMap<String, Object>> requestEntity = createRequestEntity(filename);
+		HttpEntity<MultiValueMap<String, Object>> requestEntity = createRequestEntity("/officefiles/" + filename);
 
 		// test
 		ResponseEntity<byte[]> response = new RestTemplate().postForEntity(getUrl(), requestEntity, byte[].class);
@@ -74,13 +77,32 @@ class PdfConverterE2eIT {
 		// validate
 		assertNotNull(response);
 		assertThat(response.getStatusCode(), is(HttpStatus.OK));
+
+		saveContentToFile(filename, response.getBody());
+	}
+
+    @ParameterizedTest
+    @ValueSource(strings = { "any.json", "any.txt", "any.xml", "any.xyz"})
+    @DisplayName("should convert textfiles to pdf")
+    void convertTextDocsToPdf(String filename) throws Exception {
+		// prepare	  
+		HttpEntity<MultiValueMap<String, Object>> requestEntity = createRequestEntity("/textfiles/" + filename);
+
+		// test
+		ResponseEntity<byte[]> response = new RestTemplate().postForEntity(getUrl(), requestEntity, byte[].class);
+
+		// validate
+		assertNotNull(response);
+		assertThat(response.getStatusCode(), is(HttpStatus.OK));
+		
+		saveContentToFile(filename, response.getBody());
 	}
 
 	@Test
 	@DisplayName("should convert docx to pdf 500 times")
 	void stressConverter()  {
 		// prepare
-		HttpEntity<MultiValueMap<String, Object>> requestEntity = createRequestEntity("any.docx");
+		HttpEntity<MultiValueMap<String, Object>> requestEntity = createRequestEntity("/officefiles/" + "any.docx");
 
 		// test
 		int limit = 500;
@@ -99,7 +121,7 @@ class PdfConverterE2eIT {
 
 	private HttpEntity<MultiValueMap<String, Object>> createRequestEntity(String fileName) {
 		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-		body.add("file", new ClassPathResource("/officefiles/" + fileName));
+		body.add("file", new ClassPathResource(fileName));
 
 		return new HttpEntity<>(body, createHeaders());
 	}
@@ -111,5 +133,8 @@ class PdfConverterE2eIT {
 		return headers;
 	}
 
+	private void saveContentToFile(String filename, byte[] content) throws IOException {
+		FileUtils.writeByteArrayToFile(new File(TARGET_DIR, filename + ".pdf"), content);
+	}
 
 }

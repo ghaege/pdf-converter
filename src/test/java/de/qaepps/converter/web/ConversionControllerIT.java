@@ -38,7 +38,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 class ConversionControllerIT { 
 
 	private static final String REQUEST_URL = "/convert/toPdf";
-    private static final String TARGET_DIR = "build/converted";
+    private static final String TARGET_DIR = "build/converted/byLocalLibreoffice";
 
     // controller under test
 	@Autowired
@@ -60,9 +60,9 @@ class ConversionControllerIT {
     @ParameterizedTest
     @ValueSource(strings = { "any.docx", "any.dotx", "any.xlsx", "any.xltx"})
     @DisplayName("should convert office docs to pdf")
-    void convertOfficeDocsToPdf(String fileName) throws Exception {
+    void convertOfficeDocsToPdf(String filename) throws Exception {
 		// prepare
-    	Resource testFile = new ClassPathResource("/officefiles/" + fileName);
+    	Resource testFile = new ClassPathResource("/officefiles/" + filename);
 		var multiPartFile = new MockMultipartFile("file", testFile.getFilename(), null, testFile.getInputStream());
 
 		// test & validate
@@ -72,15 +72,15 @@ class ConversionControllerIT {
 		.andReturn()
 		;
         
-		saveContentToFile(fileName, mvcResult);
+		saveContentToFile(filename, mvcResult);
 	}
     
     @ParameterizedTest
     @ValueSource(strings = { "any.json", "any.txt", "any.xml", "any.xyz"})
     @DisplayName("should convert textfiles to pdf")
-    void convertTextDocsToPdf(String fileName) throws Exception {
+    void convertTextDocsToPdf(String filename) throws Exception {
 		// prepare
-    	Resource testFile = new ClassPathResource("/textfiles/" + fileName);
+    	Resource testFile = new ClassPathResource("/textfiles/" + filename);
 		var multiPartFile = new MockMultipartFile("file", testFile.getFilename(), null, testFile.getInputStream());
 
 		// test & validate
@@ -90,13 +90,9 @@ class ConversionControllerIT {
 		.andReturn()
 		;
 		
-        saveContentToFile(fileName, mvcResult);
+        saveContentToFile(filename, mvcResult);
 	}
 
-	private void saveContentToFile(String fileName, MvcResult mvcResult) throws IOException {
-		FileUtils.writeByteArrayToFile(new File(TARGET_DIR, fileName + ".pdf"), mvcResult.getResponse().getContentAsByteArray());
-	}
-    
     @ParameterizedTest
     @ValueSource(strings = { "any.jar"})
     @DisplayName("should not convert unknown formats to pdf")
@@ -110,4 +106,9 @@ class ConversionControllerIT {
 		.andExpect(status().is5xxServerError())
 		;
 	}
+    
+	private void saveContentToFile(String filename, MvcResult mvcResult) throws IOException {
+		FileUtils.writeByteArrayToFile(new File(TARGET_DIR, filename + ".pdf"), mvcResult.getResponse().getContentAsByteArray());
+	}
+    
 }

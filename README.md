@@ -8,7 +8,7 @@
 * It's usage is most rewarding for automated document conversion within a docker infrastructure.
 * The project is based on Docker, Spring Boot, JODConverter and LibreOffice, which means it can convert any document type LibreOffice can.
 * File extensions don't matter, as long as LibreOffice is able to open and convert them.
-* Encoding of Textfiles (.txt, .json) is UTF-8, unknown extensions (Ex: .xyz) is ISO-8859 (LibreOffice default)
+* Encoding of Textfiles (.txt, .json, .xml) is UTF-8, unknown extensions (Ex: .xyz) is ISO-8859 (LibreOffice default)
 
 ## The Application
 
