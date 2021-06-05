@@ -60,6 +60,7 @@ If you only want to use it, without the need to build your own, you can pull the
 ## Release Docker Image
 
 	docker build --target pdf-converter . -t ghaege/pdf-converter:1.0.3
+    docker login
 	docker push ghaege/pdf-converter:1.0.3
 	docker push ghaege/pdf-converter
 
