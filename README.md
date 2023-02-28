@@ -59,10 +59,13 @@ If you only want to use it, without the need to build your own, you can pull the
 
 ## Release Docker Image
 
-	docker build --target pdf-converter . -t ghaege/pdf-converter:1.0.3
     docker login
-	docker push ghaege/pdf-converter:1.0.3
-	docker push ghaege/pdf-converter
+    if msg "ERROR: multiple platforms feature is currently not supported for docker driver"
+      docker buildx create --use"
+	docker buildx build \
+    -t ghaege/pdf-converter:1.0.3 -t ghaege/pdf-converter \
+    --push --platform=linux/arm64,linux/amd64 \
+    --target pdf-converter .
 
 ### Build info
 
