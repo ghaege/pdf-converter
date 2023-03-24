@@ -11,7 +11,7 @@ plugins {
 // artifact
 group = 'de.qaepps'
 description = 'PdfConverter - Rest Api'
-version = '1.0.3'
+version = '1.0.4'
 
 java {
 	sourceCompatibility = JavaVersion.VERSION_11
