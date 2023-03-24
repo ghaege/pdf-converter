@@ -8,7 +8,7 @@ FROM debian:stable as pdf-converter
 
 #  ---------------------------------- libreoffice ------
 RUN apt-get update && apt-get -y install \
-        openjdk-11-jre \
+        openjdk-17-jre \
         apt-transport-https locales-all libpng16-16 libxinerama1 libgl1-mesa-glx libfontconfig1 libfreetype6 libxrender1 \
         libxcb-shm0 libxcb-render0 adduser cpio findutils \
         # procps needed for us finding the libreoffice process, see https://github.com/sbraconnier/jodconverter/issues/127#issuecomment-463668183
