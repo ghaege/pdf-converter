@@ -24,7 +24,7 @@
     # local java build
     ./gradlew clean build
     
-    # local java build with e2eTest's (end-to-end tests with docker container)
+    # local java build with e2eTest's (end-to-end tests with docker container "ghaege/pdf-converter:latest")
     ./gradlew clean build e2eTest
 
     # builds/runs with a local installation of LibreOffice required
@@ -47,7 +47,7 @@ If you only want to use it, without the need to build your own, you can pull the
 ### Build/Run/Stop the Docker Image
 
     # build
-    docker build --target pdf-converter . -t ghaege/pdf-converter
+    docker build -t ghaege/pdf-converter .
 
     # run
     docker run --name pdf-converter -m 512m --rm -p 8100:8100 ghaege/pdf-converter
@@ -64,8 +64,7 @@ If you only want to use it, without the need to build your own, you can pull the
       docker buildx create --use"
 	docker buildx build \
     -t ghaege/pdf-converter:1.0.4 -t ghaege/pdf-converter \
-    --push --platform=linux/arm64,linux/amd64 \
-    --target pdf-converter .
+    --platform=linux/arm64,linux/amd64 --push --pull .
 
 ### Build info
 

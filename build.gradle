@@ -37,7 +37,7 @@ repositories {
 	mavenLocal()
 	mavenCentral()
 }
-// versions from 2020.12
+// versions from 2023.03
 ext {
 	// @see https://mvnrepository.com/artifact/org.jodconverter/jodconverter-local
 	jodconverterVersion = '4.3.0'
@@ -52,7 +52,7 @@ ext {
 	jaxbVersion = '3.0.0'
 	
 	// @see https://mvnrepository.com/artifact/org.testcontainers/testcontainers
-	testcontainersVersion = '1.15.1'
+	testcontainersVersion = '1.17.6'
 }
 
 dependencies {
@@ -97,13 +97,6 @@ task e2eTest(type: Test) {
 		includeTags 'e2eTest'
 	}
 }
-
-// explode war for distribution
-task explodedWar(type: Copy) {
-    from zipTree(war.archiveFile)
-    into "${buildDir}/exploded"
-} 
-assemble.dependsOn explodedWar
 
 // publish to mavenLocal
 publishing {

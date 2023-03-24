@@ -1,7 +1,10 @@
 #  ---------------------------------- debian ------
-# FROM debian:stable as pdf-converter
-# debian:sid with libre office 7.0.x is faster than debian:stable with libre office 6.1.x (by 2020-12)
-FROM debian:sid as pdf-converter
+FROM debian:stable as pdf-converter
+# FROM debian:sid as pdf-converter
+
+# debian:stable with LibreOffice 7.0.4.2 00(Build:2) 17-19 millis/500 pdf's
+# debian:sid    with LibreOffice 7.4.5.1 40(Build:1) 18-20 millis/500 pdf's
+# performance is nearly the same (by 2023-03), stable image is a bit smaller > stable
 
 #  ---------------------------------- libreoffice ------
 RUN apt-get update && apt-get -y install \
@@ -13,9 +16,10 @@ RUN apt-get update && apt-get -y install \
     # sid variant
     && apt-get -y install libreoffice --no-install-recommends \
     # fonts
-    && apt-get -y install fonts-liberation
+    && apt-get -y install fonts-liberation \
+    # unzip for exlode war
+    && apt-get -y install unzip
     # && rm -rf /var/lib/apt/lists/*
-
 
 #  ---------------------------------- spring boot app ------
 #  prepare spring boot app config
@@ -25,11 +29,14 @@ RUN mkdir -p /etc/app \
 # create app dir and cd to it
 WORKDIR /opt/app
 
-# copy the exploded war app
-COPY build/exploded/ .
+# copy war to app and explode
+ENV WAR_FILE=pdf-converter-1.0.4.war
+COPY build/libs/$WAR_FILE .
+RUN unzip $WAR_FILE && rm $WAR_FILE
+
+EXPOSE 8100
 
 # via WarLauncher
 ENTRYPOINT ["java", "org.springframework.boot.loader.WarLauncher", "--spring.config.additional-location=/etc/app/"]
 
-EXPOSE 8100
 
