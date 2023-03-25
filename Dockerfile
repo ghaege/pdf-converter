@@ -1,3 +1,4 @@
+# TODO try linuxserver/libreoffice:7.2.7 (replace existing jdk-8 with jre-17)
 #  ---------------------------------- debian ------
 FROM debian:stable as pdf-converter
 # FROM debian:sid as pdf-converter
