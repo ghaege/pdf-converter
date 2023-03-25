@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -27,17 +26,15 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
-import org.testcontainers.images.builder.ImageFromDockerfile;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
 /**
  * end-to-end tests with dockerized pdf-converter
  * <p>
- * Testcontainers creates and runs a image-on-the-fly with pdf-converter included<br>
- * After the tests the image will be removed
- * 
- * @precondition packed pdf-converter-$version.jar (gradle build) and running docker-daemon
+ *
+ * @precondition image "ghaege/pdf-converter:latest" (docker build) and running docker-daemon
  * 
  * @author haege
  *
@@ -49,20 +46,19 @@ class PdfConverterE2eIT {
 	private static final Logger LOG = LoggerFactory.getLogger(PdfConverterE2eIT.class);
 
 	private static final String API = "/convert/toPdf";
+	private static final String TARGET_DIR = "build/converted/byDockerImage";
+	private static final String PDF_CONVERTER_IMAGE = "ghaege/pdf-converter:latest";
 	private static final int EXPOSED_PORT = 8100;
-    private static final String TARGET_DIR = "build/converted/byDockerImage";
 
 	private static String getUrl() {
-		return "http://" + appContainer.getHost() + ":" + appContainer.getMappedPort(EXPOSED_PORT) + API;
+		return "http://" + appContainer.getHost() + ":" + appContainer.getFirstMappedPort() + API;
 	}
 
 	@Container
-	public static GenericContainer<?> appContainer = new GenericContainer<>(
-			new ImageFromDockerfile()
-			.withDockerfile((new File("./Dockerfile")).toPath())
-			).waitingFor(
-					Wait.forLogMessage(".*Started PdfConverterApplication.*", 1)
-					);
+	public static GenericContainer<?> appContainer = new GenericContainer(
+			DockerImageName.parse(PDF_CONVERTER_IMAGE))
+			.withExposedPorts(EXPOSED_PORT)
+			.waitingFor(Wait.forLogMessage(".*Started PdfConverterApplication.*", 1));
 
 	@ParameterizedTest
 	@ValueSource(strings = { "any.docx", "any.dotx", "any.xlsx", "any.xltx"})

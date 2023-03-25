@@ -3,19 +3,19 @@ plugins {
 	id 'eclipse-wtp'
 	id 'idea'
 	id 'maven-publish'
-	id 'org.springframework.boot' version '2.2.11.RELEASE'
-	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+	id 'org.springframework.boot' version '3.0.5'
+	id 'io.spring.dependency-management' version '1.1.0'
   id 'war' // for more deployment options
 }
 
 // artifact
 group = 'de.qaepps'
 description = 'PdfConverter - Rest Api'
-version = '1.0.3'
+version = '1.0.4'
 
 java {
-	sourceCompatibility = JavaVersion.VERSION_11
-	targetCompatibility = JavaVersion.VERSION_11
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
 }
 tasks.withType(JavaCompile) {
   options.encoding = 'UTF-8'
@@ -37,36 +37,40 @@ repositories {
 	mavenLocal()
 	mavenCentral()
 }
-// versions from 2020.12
+// fresh versions from 2023.03
 ext {
 	// @see https://mvnrepository.com/artifact/org.jodconverter/jodconverter-local
-	jodconverterVersion = '4.3.0'
+	jodconverterVersion = '4.4.6'
 
 	// @see https://mvnrepository.com/artifact/io.springfox/springfox-swagger2
-	swaggerVersion = '2.9.2'
+	swaggerVersion = '3.0.0'
 
 	// @see https://mvnrepository.com/artifact/commons-io/commons-io
-	commonsIoVersion = '2.8.0'
+	commonsIoVersion = '2.11.0'
 
 	// @see https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime
-	jaxbVersion = '3.0.0'
+	jaxbVersion = '4.0.0'
 	
 	// @see https://mvnrepository.com/artifact/org.testcontainers/testcontainers
-	testcontainersVersion = '1.15.1'
+	testcontainersVersion = '1.17.6'
+
+	// @see https://mvnrepository.com/artifact/org.yaml/snakeyaml
+	// patched for CVE-2022-1471
+	snakeyamlVersion = '2.0'
 }
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework:spring-core'
 
-	implementation "io.springfox:springfox-swagger2:$swaggerVersion"
-	implementation "io.springfox:springfox-swagger-ui:$swaggerVersion"
+	implementation "io.springfox:springfox-boot-starter:$swaggerVersion"
 
-	implementation "org.jodconverter:jodconverter-local:$jodconverterVersion"
+	implementation "org.jodconverter:jodconverter-local-lo:$jodconverterVersion"
 	implementation "org.jodconverter:jodconverter-spring-boot-starter:$jodconverterVersion"
 
 	implementation "commons-io:commons-io:$commonsIoVersion"
 	implementation "org.glassfish.jaxb:jaxb-runtime:$jaxbVersion"
+	implementation "org.yaml:snakeyaml:$snakeyamlVersion"
 
 	testImplementation 'org.junit.platform:junit-platform-launcher'
 	testImplementation "org.testcontainers:junit-jupiter:$testcontainersVersion"
@@ -97,13 +101,6 @@ task e2eTest(type: Test) {
 		includeTags 'e2eTest'
 	}
 }
-
-// explode war for distribution
-task explodedWar(type: Copy) {
-    from zipTree(war.archiveFile)
-    into "${buildDir}/exploded"
-} 
-assemble.dependsOn explodedWar
 
 // publish to mavenLocal
 publishing {
