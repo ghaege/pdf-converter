@@ -17,16 +17,22 @@ pipeline {
     }
     */
 
-    stage('build & test') {
+    stage('build, test & assemble') {
       steps { 
         sh './gradlew --no-build-cache clean build'
         sh './gradlew assemble unpack'
       }
     }
-    
+
     stage('intTest') {
-      steps { 
-        sh './gradlew --no-build-cache intTest'
+      steps {
+        sh './gradlew integrationTest'
+      }
+    }
+
+    stage('e2eTest') {
+      steps {
+        sh './gradlew e2eTest'
       }
     }
   }
