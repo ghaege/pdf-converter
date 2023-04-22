@@ -1,120 +1,110 @@
 plugins {
-	id 'java-library'
-	id 'eclipse-wtp'
+	id 'java'
 	id 'idea'
-	id 'maven-publish'
-	id 'org.springframework.boot' version '3.0.5'
-	id 'io.spring.dependency-management' version '1.1.0'
-  id 'war' // for more deployment options
+    id 'org.springframework.boot' version '3.0.5'
+    id 'io.spring.dependency-management' version '1.1.0'
+    id 'com.google.cloud.tools.jib' version '3.3.1'
 }
 
 // artifact
 group = 'de.qaepps'
 description = 'PdfConverter - Rest Api'
 version = '1.0.4'
-
-java {
-	sourceCompatibility = JavaVersion.VERSION_17
-	targetCompatibility = JavaVersion.VERSION_17
-}
-tasks.withType(JavaCompile) {
-  options.encoding = 'UTF-8'
-}
-
-bootWar {
-  manifest {
-    attributes(
-      'Start-Class'           : 'de.qaepps.converter.PdfConverterApplication',
-      'Built-By'              : System.properties['user.name'],
-      'Build-Timestamp'       : new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
-      'Implementation-Title'  : 'PdfConverter',
-      'Implementation-Version': archiveVersion,
-    )
-  }
-}
+sourceCompatibility = '17'
 
 repositories {
-	mavenLocal()
 	mavenCentral()
 }
+
 // fresh versions from 2023.03
 ext {
-	// @see https://mvnrepository.com/artifact/org.jodconverter/jodconverter-local
-	jodconverterVersion = '4.4.6'
+    // @see https://mvnrepository.com/artifact/org.jodconverter/jodconverter-local
+    jodconverterVersion = '4.4.6'
 
-	// @see https://mvnrepository.com/artifact/io.springfox/springfox-swagger2
-	swaggerVersion = '3.0.0'
+    // @see https://mvnrepository.com/artifact/io.springfox/springfox-swagger2
+    swaggerVersion = '3.0.0'
 
-	// @see https://mvnrepository.com/artifact/commons-io/commons-io
-	commonsIoVersion = '2.11.0'
+    // @see https://mvnrepository.com/artifact/commons-io/commons-io
+    commonsIoVersion = '2.11.0'
 
-	// @see https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime
-	jaxbVersion = '4.0.0'
-	
-	// @see https://mvnrepository.com/artifact/org.testcontainers/testcontainers
-	testcontainersVersion = '1.17.6'
+    // @see https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime
+    jaxbVersion = '4.0.0'
 
-	// @see https://mvnrepository.com/artifact/org.yaml/snakeyaml
-	// patched for CVE-2022-1471
-	snakeyamlVersion = '2.0'
+    // @see https://mvnrepository.com/artifact/org.testcontainers/testcontainers
+    testcontainersVersion = '1.17.6'
+
+    // @see https://mvnrepository.com/artifact/org.yaml/snakeyaml
+    // patched for CVE-2022-1471
+    snakeyamlVersion = '2.0'
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework:spring-core'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework:spring-core'
 
-	implementation "io.springfox:springfox-boot-starter:$swaggerVersion"
+    implementation "io.springfox:springfox-boot-starter:$swaggerVersion"
 
-	implementation "org.jodconverter:jodconverter-local-lo:$jodconverterVersion"
-	implementation "org.jodconverter:jodconverter-spring-boot-starter:$jodconverterVersion"
+    implementation "org.jodconverter:jodconverter-local-lo:$jodconverterVersion"
+    implementation "org.jodconverter:jodconverter-spring-boot-starter:$jodconverterVersion"
 
-	implementation "commons-io:commons-io:$commonsIoVersion"
-	implementation "org.glassfish.jaxb:jaxb-runtime:$jaxbVersion"
-	implementation "org.yaml:snakeyaml:$snakeyamlVersion"
+    implementation "commons-io:commons-io:$commonsIoVersion"
+    implementation "org.glassfish.jaxb:jaxb-runtime:$jaxbVersion"
+    implementation "org.yaml:snakeyaml:$snakeyamlVersion"
 
-	testImplementation 'org.junit.platform:junit-platform-launcher'
-	testImplementation "org.testcontainers:junit-jupiter:$testcontainersVersion"
-	testImplementation "org.testcontainers:testcontainers:$testcontainersVersion"
-	testImplementation('org.springframework.boot:spring-boot-starter-test') {
-		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-	}
-	
-	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation 'org.junit.platform:junit-platform-launcher'
+    testImplementation "org.testcontainers:junit-jupiter:$testcontainersVersion"
+    testImplementation "org.testcontainers:testcontainers:$testcontainersVersion"
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
 
-test {
-	useJUnitPlatform {
-		includeTags 'mockTest'
+jar {
+	// disables generation of *.plain.jar
+	enabled = false
+}
+
+bootJar {
+	manifest {
+		attributes(
+				'Start-Class': 'de.qaepps.converter.PdfConverterApplication',
+				'Built-By': System.properties['user.name'],
+				'Build-Timestamp': new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
+				'Implementation-Title': 'PdfConverter',
+				'Implementation-Version': archiveVersion,
+		)
 	}
+}
+
+springBoot {
+	mainClass = 'de.qaepps.converter.PdfConverterApplication'
+}
+
+task unpack(type: Copy) {
+	dependsOn bootJar
+	from(zipTree(tasks.bootJar.outputs.files.singleFile))
+	into("build/exploded")
+}
+
+// pure junit tests
+test {
+    useJUnitPlatform {
+        includeTags 'mockTest'
+    }
 }
 
 // integrationTest's
 task integrationTest(type: Test) {
-	useJUnitPlatform {
-		includeTags 'integrationTest'
-	}
+    useJUnitPlatform {
+        includeTags 'integrationTest'
+    }
 }
 
 // e2eTest's
 task e2eTest(type: Test) {
-	useJUnitPlatform {
-		includeTags 'e2eTest'
-	}
-}
-
-// publish to mavenLocal
-publishing {
-	publications {
-		myLibrary(MavenPublication) {
-			from components.java
-		}
-	}
-}
-// avoid Artifact .. wasn't produced by this build when:
-// ./gradlew clean build publishToMavenLocal -xintegrationTest
-configurations {
-	[apiElements, runtimeElements].each {
-		it.outgoing.artifacts.removeIf { it.buildDependencies.getDependencies(null).contains(war) }
-		it.outgoing.artifact(bootWar)
-	}
+    useJUnitPlatform {
+        includeTags 'e2eTest'
+    }
 }

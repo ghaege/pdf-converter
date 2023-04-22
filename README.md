@@ -34,7 +34,10 @@
     # run
     ./gradlew bootRun
     # or
-    java -jar build/libs/pdf-converter-1.0.4.war
+    java -jar build/libs/pdf-converter-1.0.4.jar
+    
+     # assembles the artifact without running tests
+    ./gradlew clean assemble unpack
 
 ## The Docker Image
 
@@ -47,7 +50,7 @@ If you only want to use it, without the need to build your own, you can pull the
 ### Build/Run/Stop the Docker Image
 
     # build
-    docker build -t ghaege/pdf-converter .
+    docker build -f Dockerfile -t ghaege/pdf-converter build/exploded
 
     # run
     docker run --name pdf-converter -m 512m --rm -p 8100:8100 ghaege/pdf-converter
