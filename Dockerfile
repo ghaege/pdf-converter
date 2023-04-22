@@ -1,7 +1,7 @@
 # TODO try linuxserver/libreoffice:7.2.7 (replace existing jdk-8 with jre-17)
 #  ---------------------------------- debian ------
-FROM debian:stable as pdf-converter
-# FROM debian:sid as pdf-converter
+FROM debian:stable-20230411
+# FROM debian:sid
 
 # debian:stable with LibreOffice 7.0.4.2 00(Build:2) 17-19 millis/500 pdf's
 # debian:sid    with LibreOffice 7.4.5.1 40(Build:1) 18-20 millis/500 pdf's
@@ -18,26 +18,16 @@ RUN apt-get update && apt-get -y install \
     && apt-get -y install libreoffice --no-install-recommends \
     # fonts
     && apt-get -y install fonts-liberation \
-    # unzip for exlode war
-    && apt-get -y install unzip
-    # && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/*
 
 #  ---------------------------------- spring boot app ------
-#  prepare spring boot app config
-RUN mkdir -p /etc/app \
-  && touch /etc/app/application.properties
-
 # create app dir and cd to it
-WORKDIR /opt/app
+WORKDIR /app
 
-# copy war to app and explode
-ENV WAR_FILE=pdf-converter-1.0.4.war
-COPY build/libs/$WAR_FILE .
-RUN unzip $WAR_FILE && rm $WAR_FILE
+# copy the exploded app
+COPY . .
 
 EXPOSE 8100
 
-# via WarLauncher
-ENTRYPOINT ["java", "org.springframework.boot.loader.WarLauncher", "--spring.config.additional-location=/etc/app/"]
-
-
+# via JarLauncher
+ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
