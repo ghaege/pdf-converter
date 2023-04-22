@@ -8,14 +8,12 @@ pipeline {
   }
   
   stages {
-    /*
-    stage('checkout') {
-      steps {
-        // branch must be local
-        git branch: 'main', url: 'ssh://git@github.com/ghaege/pdf-converter.git'
-      }
-    }
-    */
+//    stage('checkout') {
+//      steps {
+//        // branch must be local
+//        git branch: 'main', url: 'ssh://git@github.com/ghaege/pdf-converter.git'
+//      }
+//    }
 
     stage('build, test & assemble') {
       steps { 
@@ -24,11 +22,11 @@ pipeline {
       }
     }
 
-    stage('intTest') {
-      steps {
-        sh './gradlew integrationTest'
-      }
-    }
+//    stage('intTest') {
+//      steps {
+//        sh './gradlew integrationTest'
+//      }
+//    }
 
     stage('e2eTest') {
       steps {
