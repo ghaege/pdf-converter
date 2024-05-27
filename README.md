@@ -34,7 +34,7 @@
     # run
     ./gradlew bootRun
     # or
-    java -jar build/libs/pdf-converter-1.0.4.jar
+    java -jar build/libs/pdf-converter-1.0.5.jar
     
      # assembles the artifact without running tests
     ./gradlew clean assemble unpack
@@ -66,7 +66,7 @@ If you only want to use it, without the need to build your own, you can pull the
     if msg "ERROR: multiple platforms feature is currently not supported for docker driver"
       docker buildx create --use"
 	docker buildx build \
-    -t ghaege/pdf-converter:1.0.4 -t ghaege/pdf-converter \
+    -t ghaege/pdf-converter:1.0.5 -t ghaege/pdf-converter \
     --platform=linux/arm64,linux/amd64 --push --pull .
 
 ### Build info

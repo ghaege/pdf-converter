@@ -1,41 +1,30 @@
 plugins {
 	id 'java'
 	id 'idea'
-    id 'org.springframework.boot' version '3.0.5'
-    id 'io.spring.dependency-management' version '1.1.0'
-    id 'com.google.cloud.tools.jib' version '3.3.1'
+    id 'org.springframework.boot' version '3.2.3'        // https://plugins.gradle.org/plugin/org.springframework.boot
+                                                         // https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/htmlsingle/
+    id 'io.spring.dependency-management' version '1.1.4' // https://plugins.gradle.org/plugin/io.spring.dependency-management
+    // id 'com.google.cloud.tools.jib' version '3.3.1'
 }
 
 // artifact
 group = 'de.qaepps'
 description = 'PdfConverter - Rest Api'
-version = '1.0.4'
+version = '1.0.5'
 sourceCompatibility = '17'
 
 repositories {
 	mavenCentral()
 }
 
-// fresh versions from 2023.03
+// fresh versions from 2024.05
 ext {
-    // @see https://mvnrepository.com/artifact/org.jodconverter/jodconverter-local
-    jodconverterVersion = '4.4.6'
-
-    // @see https://mvnrepository.com/artifact/io.springfox/springfox-swagger2
-    swaggerVersion = '3.0.0'
-
-    // @see https://mvnrepository.com/artifact/commons-io/commons-io
-    commonsIoVersion = '2.11.0'
-
-    // @see https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime
-    jaxbVersion = '4.0.0'
-
-    // @see https://mvnrepository.com/artifact/org.testcontainers/testcontainers
-    testcontainersVersion = '1.17.6'
-
-    // @see https://mvnrepository.com/artifact/org.yaml/snakeyaml
-    // patched for CVE-2022-1471
-    snakeyamlVersion = '2.0'
+    jodconverterVersion = '4.4.7'    // @see https://mvnrepository.com/artifact/org.jodconverter/jodconverter-local
+    swaggerVersion = '3.0.0'         // @see https://mvnrepository.com/artifact/io.springfox/springfox-swagger2
+    commonsIoVersion = '2.16.1'      // @see https://mvnrepository.com/artifact/commons-io/commons-io
+    jaxbVersion = '4.0.5'            // @see https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime
+    testcontainersVersion = '1.19.8' // @see https://mvnrepository.com/artifact/org.testcontainers/testcontainers
+    snakeyamlVersion = '2.2'         // @see https://mvnrepository.com/artifact/org.yaml/snakeyaml
 }
 
 dependencies {
