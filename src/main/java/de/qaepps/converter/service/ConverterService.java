@@ -8,7 +8,7 @@ import org.jodconverter.core.office.OfficeException;
 
 public interface ConverterService {
 
-	ByteArrayOutputStream convert(DocumentFormat targetFormat, InputStream inputStream, String inputFileName)
-			throws OfficeException;
+  ByteArrayOutputStream convert(DocumentFormat targetFormat, InputStream inputStream, String inputFileName)
+      throws OfficeException;
 
 }

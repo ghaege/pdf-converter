@@ -34,103 +34,101 @@ import org.testcontainers.utility.DockerImageName;
  * end-to-end tests with dockerized pdf-converter
  * <p>
  *
- * @precondition image "ghaege/pdf-converter:latest" (docker build) and running docker-daemon
- * 
  * @author haege
- *
+ * @precondition image "ghaege/pdf-converter:latest" (docker build) and running docker-daemon
  */
 @Tag("e2eTest")
 @Testcontainers
 class PdfConverterE2eIT {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PdfConverterE2eIT.class);
+  private static final Logger LOG = LoggerFactory.getLogger(PdfConverterE2eIT.class);
 
-	private static final String API = "/convert/toPdf";
-	private static final String TARGET_DIR = "build/converted/byDockerImage";
-	private static final String PDF_CONVERTER_IMAGE = "ghaege/pdf-converter:latest";
-	private static final int EXPOSED_PORT = 8100;
+  private static final String API = "/convert/toPdf";
+  private static final String TARGET_DIR = "build/converted/byDockerImage";
+  private static final String PDF_CONVERTER_IMAGE = "ghaege/pdf-converter:latest";
+  private static final int EXPOSED_PORT = 8100;
 
-	private static String getUrl() {
-		return "http://" + appContainer.getHost() + ":" + appContainer.getFirstMappedPort() + API;
-	}
+  private static String getUrl() {
+    return "http://" + appContainer.getHost() + ":" + appContainer.getFirstMappedPort() + API;
+  }
 
-	@Container
-	public static GenericContainer<?> appContainer = new GenericContainer(
-			DockerImageName.parse(PDF_CONVERTER_IMAGE))
-			.withExposedPorts(EXPOSED_PORT)
-			.waitingFor(Wait.forLogMessage(".*Started PdfConverterApplication.*", 1));
+  @Container
+  public static GenericContainer<?> appContainer = new GenericContainer(
+      DockerImageName.parse(PDF_CONVERTER_IMAGE))
+      .withExposedPorts(EXPOSED_PORT)
+      .waitingFor(Wait.forLogMessage(".*Started PdfConverterApplication.*", 1));
 
-	@ParameterizedTest
-	@ValueSource(strings = { "any.docx", "any.dotx", "any.xlsx", "any.xltx"})
-	@DisplayName("should convert office docs to pdf")
-	void convertOfficeDocsToPdf(String filename) throws Exception {
-		// prepare	  
-		HttpEntity<MultiValueMap<String, Object>> requestEntity = createRequestEntity("/officefiles/" + filename);
+  @ParameterizedTest
+  @ValueSource(strings = {"any.docx", "any.dotx", "any.xlsx", "any.xltx"})
+  @DisplayName("should convert office docs to pdf")
+  void convertOfficeDocsToPdf(String filename) throws Exception {
+    // prepare
+    HttpEntity<MultiValueMap<String, Object>> requestEntity = createRequestEntity("/officefiles/" + filename);
 
-		// test
-		ResponseEntity<byte[]> response = new RestTemplate().postForEntity(getUrl(), requestEntity, byte[].class);
+    // test
+    ResponseEntity<byte[]> response = new RestTemplate().postForEntity(getUrl(), requestEntity, byte[].class);
 
-		// validate
-		assertNotNull(response);
-		assertThat(response.getStatusCode(), is(HttpStatus.OK));
+    // validate
+    assertNotNull(response);
+    assertThat(response.getStatusCode(), is(HttpStatus.OK));
 
-		saveContentToFile(filename, response.getBody());
-	}
+    saveContentToFile(filename, response.getBody());
+  }
 
-    @ParameterizedTest
-    @ValueSource(strings = { "any.json", "any.txt", "any.xml", "any.xyz"})
-    @DisplayName("should convert textfiles to pdf")
-    void convertTextDocsToPdf(String filename) throws Exception {
-		// prepare	  
-		HttpEntity<MultiValueMap<String, Object>> requestEntity = createRequestEntity("/textfiles/" + filename);
+  @ParameterizedTest
+  @ValueSource(strings = {"any.json", "any.txt", "any.xml", "any.xyz"})
+  @DisplayName("should convert textfiles to pdf")
+  void convertTextDocsToPdf(String filename) throws Exception {
+    // prepare
+    HttpEntity<MultiValueMap<String, Object>> requestEntity = createRequestEntity("/textfiles/" + filename);
 
-		// test
-		ResponseEntity<byte[]> response = new RestTemplate().postForEntity(getUrl(), requestEntity, byte[].class);
+    // test
+    ResponseEntity<byte[]> response = new RestTemplate().postForEntity(getUrl(), requestEntity, byte[].class);
 
-		// validate
-		assertNotNull(response);
-		assertThat(response.getStatusCode(), is(HttpStatus.OK));
-		
-		saveContentToFile(filename, response.getBody());
-	}
+    // validate
+    assertNotNull(response);
+    assertThat(response.getStatusCode(), is(HttpStatus.OK));
 
-	@Test
-	@DisplayName("should convert docx to pdf 500 times")
-	void stressConverter()  {
-		// prepare
-		HttpEntity<MultiValueMap<String, Object>> requestEntity = createRequestEntity("/officefiles/" + "any.docx");
+    saveContentToFile(filename, response.getBody());
+  }
 
-		// test
-		int limit = 500;
-		RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<byte[]> response;
-		LOG.info("stress pdf-converter with {} conversions", limit);
-		for (int i = 0; i < limit; i++) {
-			long started = System.currentTimeMillis();
-			response = restTemplate.postForEntity(getUrl(), requestEntity, byte[].class);
-			LOG.info("conversion no {} took {} millis", i, System.currentTimeMillis() - started);
+  @Test
+  @DisplayName("should convert docx to pdf 500 times")
+  void stressConverter() {
+    // prepare
+    HttpEntity<MultiValueMap<String, Object>> requestEntity = createRequestEntity("/officefiles/" + "any.docx");
 
-			assertNotNull(response);
-			assertThat(response.getStatusCode(), is(HttpStatus.OK));
-		} 
-	}
+    // test
+    int limit = 500;
+    RestTemplate restTemplate = new RestTemplate();
+    ResponseEntity<byte[]> response;
+    LOG.info("stress pdf-converter with {} conversions", limit);
+    for (int i = 0; i < limit; i++) {
+      long started = System.currentTimeMillis();
+      response = restTemplate.postForEntity(getUrl(), requestEntity, byte[].class);
+      LOG.info("conversion no {} took {} millis", i, System.currentTimeMillis() - started);
 
-	private HttpEntity<MultiValueMap<String, Object>> createRequestEntity(String fileName) {
-		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-		body.add("file", new ClassPathResource(fileName));
+      assertNotNull(response);
+      assertThat(response.getStatusCode(), is(HttpStatus.OK));
+    }
+  }
 
-		return new HttpEntity<>(body, createHeaders());
-	}
+  private HttpEntity<MultiValueMap<String, Object>> createRequestEntity(String fileName) {
+    MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+    body.add("file", new ClassPathResource(fileName));
 
-	private HttpHeaders createHeaders() {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-		headers.setAccept(Arrays.asList(MediaType.APPLICATION_OCTET_STREAM));
-		return headers;
-	}
+    return new HttpEntity<>(body, createHeaders());
+  }
 
-	private void saveContentToFile(String filename, byte[] content) throws IOException {
-		FileUtils.writeByteArrayToFile(new File(TARGET_DIR, filename + ".pdf"), content);
-	}
+  private HttpHeaders createHeaders() {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+    headers.setAccept(Arrays.asList(MediaType.APPLICATION_OCTET_STREAM));
+    return headers;
+  }
+
+  private void saveContentToFile(String filename, byte[] content) throws IOException {
+    FileUtils.writeByteArrayToFile(new File(TARGET_DIR, filename + ".pdf"), content);
+  }
 
 }

@@ -1,10 +1,10 @@
 # precondition: jar should be assembled with './gradlew clean assemble unpack'
 # build with 'docker build -f Dockerfile -t ghaege/pdf-converter build/exploded'
-#       or   'docker build --build-arg="BASE_IMAGE=registry.c4.dev/debian:stable-20240513" -t ghaege/pdf-converter build/exploded'
+#       or   'docker build --build-arg="BASE_IMAGE=registry.c4.dev/debian:stable-20240812" -t ghaege/pdf-converter build/exploded'
 # performance ca. 20 millis/500 pdf's
 
 #  ---------------------------------- debian ------
-ARG BASE_IMAGE=debian:stable-20240513
+ARG BASE_IMAGE=debian:stable-20240812
 FROM ${BASE_IMAGE} AS base
 
 #  ---------------------------------- libreoffice ------

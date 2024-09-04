@@ -1,37 +1,41 @@
 plugins {
 	id 'java'
 	id 'idea'
-    id 'org.springframework.boot' version '3.2.3'        // https://plugins.gradle.org/plugin/org.springframework.boot
+    id 'org.springframework.boot' version '3.3.3'        // https://plugins.gradle.org/plugin/org.springframework.boot
                                                          // https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/htmlsingle/
-    id 'io.spring.dependency-management' version '1.1.4' // https://plugins.gradle.org/plugin/io.spring.dependency-management
-    // id 'com.google.cloud.tools.jib' version '3.3.1'
+    id 'io.spring.dependency-management' version '1.1.6' // https://plugins.gradle.org/plugin/io.spring.dependency-management
 }
 
 // artifact
 group = 'de.qaepps'
 description = 'PdfConverter - Rest Api'
-version = '1.0.5'
-sourceCompatibility = '17'
+version = '1.0.6'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
 
 repositories {
 	mavenCentral()
 }
 
-// fresh versions from 2024.05
+// fresh versions from 2024.09
 ext {
-    jodconverterVersion = '4.4.7'    // @see https://mvnrepository.com/artifact/org.jodconverter/jodconverter-local
-    swaggerVersion = '3.0.0'         // @see https://mvnrepository.com/artifact/io.springfox/springfox-swagger2
+    jodconverterVersion = '4.4.8'    // @see https://mvnrepository.com/artifact/org.jodconverter/jodconverter-local
+    openApiVersion = '2.6.0'         // @see https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui
     commonsIoVersion = '2.16.1'      // @see https://mvnrepository.com/artifact/commons-io/commons-io
     jaxbVersion = '4.0.5'            // @see https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime
-    testcontainersVersion = '1.19.8' // @see https://mvnrepository.com/artifact/org.testcontainers/testcontainers
-    snakeyamlVersion = '2.2'         // @see https://mvnrepository.com/artifact/org.yaml/snakeyaml
+    testcontainersVersion = '1.20.1' // @see https://mvnrepository.com/artifact/org.testcontainers/testcontainers
+    snakeyamlVersion = '2.3'         // @see https://mvnrepository.com/artifact/org.yaml/snakeyaml
 }
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework:spring-core'
 
-    implementation "io.springfox:springfox-boot-starter:$swaggerVersion"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$openApiVersion"
 
     implementation "org.jodconverter:jodconverter-local-lo:$jodconverterVersion"
     implementation "org.jodconverter:jodconverter-spring-boot-starter:$jodconverterVersion"
