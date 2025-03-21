@@ -20,60 +20,57 @@
 
 ### Build/Run the Application
 
-    # builds 
-    # local java build
-    ./gradlew clean build
-    
-    # local java build with e2eTest's (end-to-end tests with docker container "ghaege/pdf-converter:latest")
-    ./gradlew clean build e2eTest
+```sh
+# local java build
+./gradlew clean build
 
-    # builds/runs with a local installation of LibreOffice required
-    # local java build with integrationTest's
-    ./gradlew clean build integrationTest
+# local java build with e2eTest's (end-to-end tests with docker container "ghaege/pdf-converter:latest")
+./gradlew clean build e2eTest
 
-    # run
-    ./gradlew bootRun
-    # or
-    java -jar build/libs/pdf-converter-1.0.5.jar
-    
-     # assembles the artifact without running tests
-    ./gradlew clean assemble unpack
+# builds/runs with a local installation of LibreOffice required
+# local java build with integrationTest's
+./gradlew clean build integrationTest
 
-## The Docker Image
+# run
+./gradlew bootRun
+# or
+java -jar build/libs/pdf-converter-1.0.7.jar
 
-### Shortcut via docker hub
+ # assembles the artifact without running tests
+./gradlew clean assemble unpack
+```
 
-If you only want to use it, without the need to build your own, you can pull the image from docker hub with
+## Build/Run/Stop the Docker Image
 
-    docker pull ghaege/pdf-converter
+```sh
+# build
+docker build -f Dockerfile -t ghaege/pdf-converter build/exploded
 
-### Build/Run/Stop the Docker Image
+# run
+docker run --name pdf-converter -m 512m --rm -p 8100:8100 ghaege/pdf-converter
+# run as daemon
+docker run --name pdf-converter -m 512m --rm -d -p 8100:8100 ghaege/pdf-converter
 
-    # build
-    docker build -f Dockerfile -t ghaege/pdf-converter build/exploded
+# stop
+docker stop pdf-converter
+```
 
-    # run
-    docker run --name pdf-converter -m 512m --rm -p 8100:8100 ghaege/pdf-converter
-    # run as daemon
-    docker run --name pdf-converter -m 512m --rm -d -p 8100:8100 ghaege/pdf-converter
+## DEPRECATED Release Docker Image
 
-    # stop
-    docker stop pdf-converter
-
-## Release Docker Image
-
-    docker login
-    if msg "ERROR: multiple platforms feature is currently not supported for docker driver"
-      docker buildx create --use"
-	docker buildx build \
-    -t ghaege/pdf-converter:1.0.5 -t ghaege/pdf-converter \
-    --platform=linux/arm64,linux/amd64 --push --pull .
+```sh
+docker login
+#if msg "ERROR: multiple platforms feature is currently not supported for docker driver"
+#  docker buildx create --use"
+docker buildx build \
+-t ghaege/pdf-converter:1.0.7 -t ghaege/pdf-converter \
+--platform=linux/arm64,linux/amd64 --push --pull .
+```
 
 ### Build info
 
 - Debian SID (because it comes with LibreOffice 7+ which performs better than 6+)
 - LibreOffice 7+
-- OpenJDK 11 Java
+- OpenJDK 17 Java
 - PDF Converter as REST API
 
 ### Configuration
@@ -96,7 +93,17 @@ spring.servlet.multipart.max-request-size: 3MB
 
 ## REST endpoints
 
-Run the Application or Image and access [http://localhost:8100/swagger-ui.html](http://localhost:8100/swagger-ui.html) to browse, inspect and try the REST endpoints.
+Run/deploy the Application
+
+```sh
+# check if it works
+http://localhost:8100/v3/api-docs 
+# swagger ui is integrated in springdoc-openapi
+http://localhost:8100/swagger-ui/index.html
+
+# convert a doc via curl
+curl -v -F file=@src/test/resources/officefiles/any.docx "localhost:8100/convert/toPdf" -o ./build/any.pdf
+```
 
 ## License
 

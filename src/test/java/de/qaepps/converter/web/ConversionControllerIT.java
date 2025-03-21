@@ -26,89 +26,86 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 /**
  * integration tests with local installed LibreOffice
- * 
- * @precondition local installed LibreOffice
- * 
- * @author haege
  *
+ * @author haege
+ * @precondition local installed LibreOffice
  */
 @Tag("integrationTest")
 @ActiveProfiles("test") // loads application-test.yml to overload application.yml
 @SpringBootTest
-class ConversionControllerIT { 
+class ConversionControllerIT {
 
-	private static final String REQUEST_URL = "/convert/toPdf";
-    private static final String TARGET_DIR = "build/converted/byLocalLibreoffice";
+  private static final String REQUEST_URL = "/convert/toPdf";
+  private static final String TARGET_DIR = "build/converted/byLocalLibreoffice";
 
-    // controller under test
-	@Autowired
-	private ConversionController conversionController;
+  // controller under test
+  @Autowired
+  private ConversionController conversionController;
 
-    private MockMvc mockMvc;
-    private String targetMimeType;
-    
-    @BeforeEach
-    public void before() {
-    	// create mockMvc
-    	mockMvc = MockMvcBuilders
-    	        .standaloneSetup(conversionController)
-    	        .build();
-    	
-    	targetMimeType = DefaultDocumentFormatRegistry.getFormatByExtension("pdf").getMediaType();
-    }
+  private MockMvc mockMvc;
+  private String targetMimeType;
 
-    @ParameterizedTest
-    @ValueSource(strings = { "any.docx", "any.dotx", "any.xlsx", "any.xltx"})
-    @DisplayName("should convert office docs to pdf")
-    void convertOfficeDocsToPdf(String filename) throws Exception {
-		// prepare
-    	Resource testFile = new ClassPathResource("/officefiles/" + filename);
-		var multiPartFile = new MockMultipartFile("file", testFile.getFilename(), null, testFile.getInputStream());
+  @BeforeEach
+  public void before() {
+    // create mockMvc
+    mockMvc = MockMvcBuilders
+        .standaloneSetup(conversionController)
+        .build();
 
-		// test & validate
-		MvcResult mvcResult = mockMvc.perform(multipart(REQUEST_URL).file(multiPartFile))
-		.andExpect(status().isOk())
-		.andExpect(content().contentType(targetMimeType))
-		.andReturn()
-		;
-        
-		saveContentToFile(filename, mvcResult);
-	}
-    
-    @ParameterizedTest
-    @ValueSource(strings = { "any.json", "any.txt", "any.xml", "any.xyz"})
-    @DisplayName("should convert textfiles to pdf")
-    void convertTextDocsToPdf(String filename) throws Exception {
-		// prepare
-    	Resource testFile = new ClassPathResource("/textfiles/" + filename);
-		var multiPartFile = new MockMultipartFile("file", testFile.getFilename(), null, testFile.getInputStream());
+    targetMimeType = DefaultDocumentFormatRegistry.getFormatByExtension("pdf").getMediaType();
+  }
 
-		// test & validate
-		MvcResult mvcResult = mockMvc.perform(multipart(REQUEST_URL).file(multiPartFile))
-		.andExpect(status().isOk())
-		.andExpect(content().contentType(targetMimeType))
-		.andReturn()
-		;
-		
-        saveContentToFile(filename, mvcResult);
-	}
+  @ParameterizedTest
+  @ValueSource(strings = {"any.docx", "any.dotx", "any.xlsx", "any.xltx"})
+  @DisplayName("should convert office docs to pdf")
+  void convertOfficeDocsToPdf(String filename) throws Exception {
+    // prepare
+    Resource testFile = new ClassPathResource("/officefiles/" + filename);
+    var multiPartFile = new MockMultipartFile("file", testFile.getFilename(), null, testFile.getInputStream());
 
-    @ParameterizedTest
-    @ValueSource(strings = { "any.jar"})
-    @DisplayName("should not convert unknown formats to pdf")
-    void convertUnknownFormatsToPdf(String fileName) throws Exception {
-		// prepare
-    	Resource testFile = new ClassPathResource("/unknown/" + fileName);
-		var multiPartFile = new MockMultipartFile("file", testFile.getFilename(), null, testFile.getInputStream());
+    // test & validate
+    MvcResult mvcResult = mockMvc.perform(multipart(REQUEST_URL).file(multiPartFile))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(targetMimeType))
+        .andReturn();
 
-		// test & validate
-		mockMvc.perform(multipart(REQUEST_URL).file(multiPartFile))
-		.andExpect(status().is5xxServerError())
-		;
-	}
-    
-	private void saveContentToFile(String filename, MvcResult mvcResult) throws IOException {
-		FileUtils.writeByteArrayToFile(new File(TARGET_DIR, filename + ".pdf"), mvcResult.getResponse().getContentAsByteArray());
-	}
-    
+    saveContentToFile(filename, mvcResult);
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"any.json", "any.txt", "any.xml", "any.xyz"})
+  @DisplayName("should convert textfiles to pdf")
+  void convertTextDocsToPdf(String filename) throws Exception {
+    // prepare
+    Resource testFile = new ClassPathResource("/textfiles/" + filename);
+    var multiPartFile = new MockMultipartFile("file", testFile.getFilename(), null, testFile.getInputStream());
+
+    // test & validate
+    MvcResult mvcResult = mockMvc.perform(multipart(REQUEST_URL).file(multiPartFile))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(targetMimeType))
+        .andReturn();
+
+    saveContentToFile(filename, mvcResult);
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"any.jar"})
+  @DisplayName("should not convert unknown formats to pdf")
+  void convertUnknownFormatsToPdf(String fileName) throws Exception {
+    // prepare
+    Resource testFile = new ClassPathResource("/unknown/" + fileName);
+    var multiPartFile = new MockMultipartFile("file", testFile.getFilename(), null, testFile.getInputStream());
+
+    // test & validate
+    mockMvc.perform(multipart(REQUEST_URL).file(multiPartFile))
+        .andExpect(status().is5xxServerError())
+    ;
+  }
+
+  private void saveContentToFile(String filename, MvcResult mvcResult) throws IOException {
+    FileUtils.writeByteArrayToFile(new File(TARGET_DIR, filename + ".pdf"),
+        mvcResult.getResponse().getContentAsByteArray());
+  }
+
 }
