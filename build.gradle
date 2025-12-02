@@ -1,7 +1,7 @@
 plugins {
 	id 'java'
 	id 'idea'
-    id 'org.springframework.boot' version '3.4.3'        // https://plugins.gradle.org/plugin/org.springframework.boot
+    id 'org.springframework.boot' version '4.0.0'        // https://plugins.gradle.org/plugin/org.springframework.boot
                                                          // https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/htmlsingle/
     id 'io.spring.dependency-management' version '1.1.7' // https://plugins.gradle.org/plugin/io.spring.dependency-management
 }
@@ -9,7 +9,7 @@ plugins {
 // artifact
 group = 'de.qaepps'
 description = 'PdfConverter - Rest Api'
-version = '1.0.7'
+version = '1.0.8'
 
 java {
     toolchain {
@@ -23,12 +23,12 @@ repositories {
 
 // fresh versions from 2025.03
 ext {
-    jodconverterVersion = '4.4.8'    // @see https://mvnrepository.com/artifact/org.jodconverter/jodconverter-local
-    openApiVersion = '2.8.5'         // @see https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui
-    commonsIoVersion = '2.18.0'      // @see https://mvnrepository.com/artifact/commons-io/commons-io
-    jaxbVersion = '4.0.5'            // @see https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime
-    testcontainersVersion = '1.20.6' // @see https://mvnrepository.com/artifact/org.testcontainers/testcontainers
-    snakeyamlVersion = '2.4'         // @see https://mvnrepository.com/artifact/org.yaml/snakeyaml
+    jodconverterVersion = '4.4.11'   // @see https://mvnrepository.com/artifact/org.jodconverter/jodconverter-local
+    openApiVersion = '3.0.0'         // @see https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui
+    commonsIoVersion = '2.21.0'      // @see https://mvnrepository.com/artifact/commons-io/commons-io
+    jaxbVersion = '4.0.6'            // @see https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime
+    testcontainersVersion = '1.21.3' // @see https://mvnrepository.com/artifact/org.testcontainers/testcontainers
+    snakeyamlVersion = '2.5'         // @see https://mvnrepository.com/artifact/org.yaml/snakeyaml
 }
 
 dependencies {
